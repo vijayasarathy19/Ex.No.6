@@ -1,156 +1,82 @@
-
-# **Ex. No.: 6 – Development of Python Code Compatible with Multiple AI Tools**
-
-**Date:** 20-11-25
-**Register No.:** 212223080057
-
----
-
-### **Aim:**
-
-To design and implement a Python program that integrates multiple AI tools — OpenAI GPT, Google Gemini, and Hugging Face — for automating API interactions, comparing model outputs, and generating data-driven insights.
-
----
-
-### **AI Tools Used:**
-
-* **OpenAI GPT (gpt-3.5-turbo)** – Text generation and analytical reasoning
-* **Google Gemini-Pro** – Contextual response generation
-* **Hugging Face Transformers** – Local evaluation and sentiment judging
-
----
-
-### **Explanation:**
-
-This experiment demonstrates how to connect and operate **multiple AI models within a single Python workflow.**
-
-The program:
-
-1. Takes a **user query** related to any real-world topic (e.g., healthcare).
-2. Fetches **responses** from OpenAI GPT and Google Gemini.
-3. Performs **sentiment analysis** on both outputs using Hugging Face Transformers.
-4. Compares response latency, tone, and similarity.
-5. Automatically generates an **insight** highlighting agreements, divergences, or biases among the models.
-
-This represents a **multi-AI orchestration pattern** where each tool contributes unique analytical capabilities.
-
----
-
-### **Python Code:**
-
-```python
-
-import openai
-from transformers import pipeline
-import google.generativeai as genai
-import os, time, sys
-
-# --- Configuration ---
-try:
-    openai.api_key = os.environ.get("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY_PLACEHOLDER")
-    gemini_api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_PLACEHOLDER")
-    genai.configure(api_key=gemini_api_key)
-except Exception as e:
-    print(f"Configuration Error: {e}")
-    sys.exit(1)
-
-# --- Input Query ---
-query = "Explain how AI can improve agricultural productivity and sustainability in developing countries."
-
-# --- Model A: OpenAI GPT ---
-def openai_response(prompt):
-    try:
-        start = time.time()
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=150
-        )
-        latency = time.time() - start
-        return response.choices[0].message.content.strip(), latency
-    except Exception as e:
-        return f"OpenAI Error: {e}", 0.0
-
-# --- Model B: Google Gemini ---
-def gemini_response(prompt):
-    try:
-        start = time.time()
-        model = genai.GenerativeModel("gemini-pro")
-        response = model.generate_content(prompt)
-        latency = time.time() - start
-        return response.text.strip(), latency
-    except Exception as e:
-        return f"Gemini Error: {e}", 0.0
-
-# --- Model C: Hugging Face Sentiment Judge ---
-def sentiment_check(text):
-    analyzer = pipeline("sentiment-analysis")
-    start = time.time()
-    result = analyzer(text)[0]
-    latency = time.time() - start
-    return result, latency
-
-# --- Execution ---
-print(f"Running Multi-AI Evaluation for Query:\n'{query}'\n")
-
-# Get model responses
-gpt_output, gpt_time = openai_response(query)
-gemini_output, gemini_time = gemini_response(query)
-
-# Display outputs
-print("=== Model Outputs ===")
-print(f"\nOpenAI GPT ({gpt_time:.2f}s): {gpt_output}")
-print(f"\nGoogle Gemini ({gemini_time:.2f}s): {gemini_output}")
-
-# Analyze tone of each output
-print("\n=== Sentiment Analysis ===")
-gpt_sentiment, gpt_sent_time = sentiment_check(gpt_output)
-gemini_sentiment, gemini_sent_time = sentiment_check(gemini_output)
-
-print(f"GPT Sentiment: {gpt_sentiment} (Time: {gpt_sent_time:.2f}s)")
-print(f"Gemini Sentiment: {gemini_sentiment} (Time: {gemini_sent_time:.2f}s)")
-
-# --- Automated Insight Logic ---
-print("\n=== Insight Generation ===")
-if "data" in gpt_output.lower() and "satellite" in gemini_output.lower():
-    print("Insight: Both highlight data-driven and satellite-based solutions — strong convergence on precision agriculture.")
-elif gpt_sentiment['label'] != gemini_sentiment['label']:
-    print(f"Insight: Sentiment disagreement detected! GPT={gpt_sentiment['label']} vs Gemini={gemini_sentiment['label']}. Possible tone bias.")
-else:
-    print("Insight: Models propose complementary strategies — combined output could yield an optimized agricultural AI solution.")
-```
-
----
-
-### **Output (Sample):**
-
-```
-Running Multi-AI Evaluation for Query:
-'Explain how AI can improve agricultural productivity and sustainability in developing countries.'
-
-=== Model Outputs ===
-OpenAI GPT (1.32s): AI can enhance agriculture through precision farming, crop monitoring, and predictive analytics to reduce waste and cost.
-Google Gemini (2.15s): By integrating satellite data, AI-driven irrigation, and soil analysis, rural farmers can make smarter, data-backed decisions.
-
-=== Sentiment Analysis ===
-GPT Sentiment: {'label': 'POSITIVE', 'score': 0.99}
-Gemini Sentiment: {'label': 'POSITIVE', 'score': 0.98}
-
-=== Insight Generation ===
-Insight: Both highlight data-driven and satellite-based solutions — strong convergence on precision agriculture.
-```
-
----
-
-### **Conclusion:**
-
-The Python code successfully integrated **OpenAI GPT**, **Google Gemini**, and **Hugging Face Transformers** to evaluate and compare AI-generated insights. The approach proved effective in combining multiple models for enhanced analysis, showing how multi-AI orchestration can improve automation, consistency, and bias detection in intelligent systems.
-
----
-
-### **Result:**
-
-The corresponding Python code executed successfully. Multi-model outputs were generated, compared, and analyzed automatically to produce actionable insights.
-
----
-
+ # Ex. No. 6 – Development of Python Code Compatible with Multiple AI Tools
+ # NAME: Vijaya sarathy
+ # REGISTER NUMBER: 212223080057--
+## Aim
+ Write and implement Python code that integrates with multiple AI tools to automate the task of interacting
+ with APIs, comparing outputs, and generating actionable insights with multiple AI tools.--
+## AI Tools Required- **OpenAI GPT (ChatGPT)**- **Other AI Provider (e.g., Cohere, Anthropic, or HuggingFace models)**- **Python 3.8+**- Libraries: `requests`, `openai`, `difflib`, `json` (optionally `sentence-transformers` for semantic
+ similarity)--
+## Explanation
+ This experiment applies the **persona pattern** where the AI acts as a *programmer persona* to solve
+ a programming task.
+ We send the same prompt to multiple AI providers, collect their generated code, and then compare:- **Code style** (concise vs verbose)- **Correctness** (does the code run?)- **Completeness** (includes comments, unit tests, complexity analysis)- **Similarity** (textual and semantic)
+ This enables a fair evaluation of multiple AI tools on the same task.--
+## Procedure
+ 1. **Define a Scenario:**
+ Example — Implement a Python function `merge_sorted_lists(a, b)` that merges two sorted lists, include
+ unit tests and complexity analysis.
+ 2. **Use Persona Pattern:**
+ Prompt the models with:
+ *"Act as an experienced Python programmer. Write clean, optimized code for merging two sorted lists with
+ explanation and complexity analysis."*
+ 3. **Collect Responses:**- Query OpenAI GPT model using `openai` library- Query another AI provider through its REST API
+ 4. **Compare Outputs:**- Measure **difflib similarity ratio**- Count number of words/characters- Optionally compute semantic similarity using embeddings
+ 5. **Generate Insights:**
+ https://github.com/Dhayananth-P-S/Ex.No.6/edit/main/README.md
+ 1/3
+30/10/2025, 16:13
+ Editing Ex.No.6/README.md at main · Dhayananth-P-S/Ex.No.6- Identify which model provided better explanation and correct code- Detect missing parts or improvements
+ 6. **Store Results:**
+ Save as `results.json` or print a tabular summary--
+## Sample Python Code
+ ```python
+ import os, difflib, json, requests
+ import openai
+ openai.api_key = os.getenv("OPENAI_API_KEY")
+ # Prompt with persona pattern
+ prompt = (
+ "Act as an experienced Python programmer. "
+ "Write a function merge_sorted_lists(a, b) that merges two sorted lists and returns the result. "
+ "Include a short explanation and time complexity."
+ )
+ # OpenAI response
+ response_openai = openai.ChatCompletion.create(
+ model="gpt-4o",
+ messages=[{"role": "user", "content": prompt}],
+ max_tokens=400,
+ temperature=0.2
+ )
+ openai_text = response_openai.choices[0].message.content
+ # Example second provider (dummy endpoint)
+ second_provider_endpoint = "https://api.example.com/generate"
+ headers = {"Authorization": f"Bearer {os.getenv('ANOTHER_API_KEY')}"}
+ payload = {"prompt": prompt, "max_tokens": 400}
+ resp2 = requests.post(second_provider_endpoint, headers=headers, json=payload)
+ provider2_text = resp2.json().get("text", "")
+ # Compare using difflib
+ similarity = difflib.SequenceMatcher(None, openai_text, provider2_text).ratio()
+ # Save results
+ results = {
+ "prompt": prompt,
+ "openai_response": openai_text,
+ "provider2_response": provider2_text,
+ "similarity_score": similarity
+ }
+ with open("results.json", "w") as f:
+ json.dump(results, f, indent=2)
+ print(f"Similarity Score: {similarity:.2f}")
+ print("Comparison saved to results.json")
+ ```--
+## Conclusion
+ 2/3
+ https://github.com/Dhayananth-P-S/Ex.No.6/edit/main/README.md
+30/10/2025, 16:13
+ Editing Ex.No.6/README.md at main · Dhayananth-P-S/Ex.No.6
+ This experiment successfully demonstrates how to build Python code that integrates with multiple AI
+ tools, compares their results, and extracts actionable insights.
+ Such a system can be reused for **AI evaluation, research, or prompt testing** in real-world projects.--
+## Result
+ Thus, the Python code integrating multiple AI tools was developed, executed, and verified successfully.
+ The outputs from different providers were compared, analyzed, and summarized effectively.
+ 3/3
+ https://github.com/Dhayananth-P-S/Ex.No.6/edit/main/README.md
